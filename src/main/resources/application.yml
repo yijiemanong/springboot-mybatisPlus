@@ -1,0 +1,79 @@
+server:
+  port: 80
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 主库数据源
+      master:
+        url: jdbc:mysql://192.168.209.128:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      # 从库数据源
+      slave:
+        # 从数据源开关/默认关闭
+        enabled: false
+        url: jdbc:mysql://192.168.209.128:3306/ry2?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      filters: stat
+      maxActive: 20
+      initialSize: 1
+      maxWait: 60000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+
+  resources:
+    static-locations: classpath:/
+  freemarker:
+    charset: utf-8
+    content-type: text/html
+    suffix: .ftl
+    template-loader-path: classpath:/ftl/
+    enabled: true
+    prefer-file-system-access: true
+    check-template-location: true
+#pagehelper分页插件
+#pagehelper:
+#  helperDialect: mysql
+#  reasonable: true
+#  supportMethodsArguments: true
+#  params: count=countSql
+
+
+## 该配置节点为独立的节点，有很多同学容易将这个配置放在spring的节点下，导致配置无法被识别
+#mybatis:
+#  mapper-locations: classpath:mapper/**/*.xml #注意：一定要对应mapper映射xml文件的所在路径
+#  type-aliases-package: com.example.web.mapper # 注意：对应实体类的路径
+
+#mybatis plus 设置
+mybatis-plus:
+  type-aliases-package: com.example.web.model
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    jdbc-type-for-null: null
+  global-config:
+    # 关闭 mybatis-plus的 banner
+    banner: false
+    db-config:
+          #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+          id-type: AUTO
+          #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+          field-strategy: not_empty
+          #数据库大写下划线转换
+          #capital-mode: true
+          #逻辑删除配置
+          logic-delete-value: 2 # 逻辑已删除值(默认为 2)
+          logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
